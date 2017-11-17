@@ -1,3 +1,3 @@
 # securityonion-docker-airgap
 
-sudo bash so-elastic-airgap-save
+sudo bash ./so-elastic-airgap-save
