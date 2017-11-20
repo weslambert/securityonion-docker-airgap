@@ -1,0 +1,49 @@
+#!/bin/bash
+
+# Source dir
+DIR="."
+
+SOURCE=""
+
+#########################################
+# Options
+#########################################
+usage()
+{
+cat <<EOF
+Security Onion Docker Airgap Load
+  Options:
+  -h         This message
+  -d         Specify destination
+
+EOF
+}
+
+#########################################
+# Call functions
+#########################################
+
+# Check to see if the user provided a source directory for the Docker images.
+while getopts "hd:y:" OPTION
+do
+     case $OPTION in
+         h)
+                usage
+                exit 0
+                ;;
+         s)
+		SOURCE="$OPTARG"
+             ;;
+     esac
+done
+
+if [ "$SOURCE" != "" ]; then 
+	DIR=$SOURCE
+fi 
+
+# Load Docker images
+echo "Loading Docker images from $DIR..." 
+for i in so-elasticsearch so-kibana so-logstash so-elastalert so-freqserver so-domainstats so-curator; do
+	docker load < $DIR/$i.tar
+done
+
