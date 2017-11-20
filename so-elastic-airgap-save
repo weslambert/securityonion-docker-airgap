@@ -1,13 +1,59 @@
 #!/bin/bash
 
+DIR="."
+
 REPO="securityonionsolutions"
 
+DESTINATION=""
+
+#########################################
+# Options
+#########################################
+usage()
+{
+cat <<EOF
+Security Onion Docker Airgap Save
+  Options:
+  -h         This message
+  -d         Specify destination directory
+
+EOF
+}
+
+#########################################
+# Call functions
+#########################################
+
+# Check to see if the user provided a destination directory for the Docker images.
+while getopts "hd:y:" OPTION
+do
+     case $OPTION in
+         h)
+                usage
+                exit 0
+                ;;
+         d)
+                DESTINATION="$OPTARG"
+             ;;
+     esac
+done
+
+if [ "$DESTINATION" != "" ]; then
+        DIR=$DESTINATION
+fi
+
+
 # Create a directory for our Docker images
-mkdir images
-cd images
+mkdir $DIR/images
+cd $DIR/images
+
+DIR="$DIR/images"
+
+# Save Docker images to destiantion directory
+echo "Saving Docker images to $DIR..."  
 
 # Pull down docker images and save to .tar files 
 for i in so-elasticsearch so-kibana so-logstash so-elastalert so-freqserver so-domainstats so-curator; do
 	docker pull --disable-content-trust=false $REPO/$i
-	docker save $REPO/$i > $i.tar
+	docker save $REPO/$i > $DIR/$i.tar
 done
