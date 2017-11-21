@@ -1,0 +1,41 @@
+#!/bin/bash
+
+# Check for prerequisites
+if [ "$(id -u)" -ne 0 ]; then
+        echo "This script must be run using sudo!"
+        exit 1
+fi
+
+# Define a banner to separate sections
+banner="========================================================================="
+
+header() {
+        echo
+        printf '%s\n' "$banner" "$*" "$banner"
+}
+
+
+header "Security Onion - Docker Airgap Transfer"
+echo
+echo 'What would you like to do?'
+echo
+options=("Save Images" "Load Images" "Exit")
+select opt in "${options[@]}"
+do
+    case $opt in
+        "Save Images")
+	echo "Saving images..."
+	bash ./so-elastic-airgap-save
+	break
+	;;
+	"Load Images")
+	echo "Loading images..."
+	bash ./so-elastic-airgap-load
+	break
+	;;
+    	"Exit")
+	echo "Exiting ..."
+	break
+	;;
+    esac
+done
