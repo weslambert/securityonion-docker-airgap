@@ -44,16 +44,26 @@ fi
 
 
 # Create a directory for our Docker images
-mkdir $DIR/images
-cd $DIR/images
+if [ -d $DIR/images ]; then
+	:
+else
+	mkdir $DIR/images
+fi
 
 DIR="$DIR/images"
 
-# Save Docker images to destiantion directory
-echo "Saving Docker images to $DIR..."  
+# Save Docker images to destination directory
+echo "Saving Docker images to $DIR..." 
+if [ -d $DIR/images.tar ]; then
+	:
+else 
+tar cvf $DIR/images.tar --files-from /dev/null
+fi
 
 # Pull down docker images and save to .tar files 
 for i in so-elasticsearch so-kibana so-logstash so-elastalert so-freqserver so-domainstats so-curator; do
 	docker pull --disable-content-trust=false $REPO/$i
 	docker save $REPO/$i > $DIR/$i.tar
+	tar -rvf $DIR/images.tar $DIR/$i.tar
+	rm -f $DIR/$i.tar
 done

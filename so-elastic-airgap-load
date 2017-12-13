@@ -41,9 +41,20 @@ if [ "$SOURCE" != "" ]; then
 	DIR=$SOURCE
 fi 
 
+# Extract images from archive and remove archive
+if [ -f $DIR/images/images.tar ]; then
+	tar -xvf $DIR/images/images.tar
+	rm -f $DIR/images/images.tar
+else
+	echo "No file to load!"
+	exit 0
+fi
+
 # Load Docker images
-echo "Loading Docker images from $DIR..." 
+echo "Loading Docker images from $DIR/images/..."
 for i in so-elasticsearch so-kibana so-logstash so-elastalert so-freqserver so-domainstats so-curator; do
-	docker load < $DIR/$i.tar
+	docker load < $DIR/images/$i.tar
+	# Remove images as they are loaded to free disk space
+	#rm -f $DIR/images/$i.tar
 done
 
